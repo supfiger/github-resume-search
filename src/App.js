@@ -1,8 +1,15 @@
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Home from "./routes/Home";
+import Resume from "./routes/Resume";
+
 function App() {
   return (
-    <div className="App">
-      App
-    </div>
+    <Router>
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/:username" component={Resume} />
+      </Switch>
+    </Router>
   );
 }
 
