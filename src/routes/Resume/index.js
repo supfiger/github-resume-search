@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { Container, Row, Table } from "reactstrap";
+import { Container, Row } from "reactstrap";
+
+import { getRepos, getLanguagesPercentage } from "../../utils";
+
+import Table from "../../components/Table";
 
 function Header() {
-  let history = useHistory();
+  const history = useHistory();
   const { name } = history.location.state.userData;
 
   return (
@@ -20,16 +24,40 @@ function Header() {
 }
 
 function UserInfo() {
+  const [repos, setRepos] = useState(null);
+  const [languages, setLanguages] = useState(null);
+
+  const history = useHistory();
+
+  const { userData } = history.location.state;
+  const { repos_url } = userData;
+
+  // get list of user repos
+  useEffect(() => {
+    // setRepos(getRepos(repos_url));
+  }, [repos_url]);
+
+  // get list of user's used languages
+  useEffect(() => {
+    // if (repos) setLanguages(getLanguagesPercentage(repos));
+  }, [repos]);
+
+  useEffect(() => {
+    console.log("userData:", userData);
+    console.log("repos:", repos);
+    console.log("languages:", languages);
+  }, [repos, languages, userData]);
+
+  const tableInfo = {
+    userFullName: userData.name,
+    amountOfPublicRepos: userData.public_repos,
+    dateProfileCreated: userData.created_at,
+    website: userData.blog,
+  };
+
   return (
     <Row>
-      <Table>
-        <tbody>
-          <tr>
-            <th scope="row">{}</th>
-            <td>{}</td>
-          </tr>
-        </tbody>
-      </Table>
+      <Table data={tableInfo} />
     </Row>
   );
 }
