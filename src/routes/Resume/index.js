@@ -1,15 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Container, Row, Table } from "reactstrap";
 
 function Header() {
+  let history = useHistory();
+  const { name } = history.location.state.userData;
+
   return (
     <>
       <Row className="border-bottom py-3">
         <Link to="/">← Back to home</Link>
       </Row>
       <Row className="border-bottom py-3">
-        <h1>{"John John"} — Resume</h1>
+        <h1>{name} — Resume</h1>
         <h2 className="h4">GitHub profile</h2>
       </Row>
     </>
