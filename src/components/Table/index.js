@@ -58,7 +58,7 @@ export default function Table({ data }) {
         <TableRow title="Recently edited repositories">
           {lastEditedRepos &&
             lastEditedRepos.map((item) => (
-              <Row>
+              <Row key={item.name}>
                 <a href={item.url}>{item.name}</a>
               </Row>
             ))}
