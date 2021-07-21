@@ -18,10 +18,10 @@ export const convertTableData = (data) => {
 
   let languagesGrid;
   if (languages) {
-    console.log("languages:", languages);
     languagesGrid = {
       columns: 3,
       get rows() {
+        if (languages.length < this.columns) return 1;
         return Math.round(languages.length / this.columns);
       },
       get arrayOfColumns() {
@@ -31,8 +31,7 @@ export const convertTableData = (data) => {
         return [...Array(this.rows).keys()];
       },
       getCurrentLanguage(row, col) {
-        const lang = languages[row * this.columns + col];
-        return lang;
+        return languages[row * this.columns + col];
       },
     };
   }

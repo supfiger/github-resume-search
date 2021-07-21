@@ -14,8 +14,6 @@ export default function Table({ data }) {
     lastEditedRepos,
   } = convertTableData(data);
 
-  console.log("lastEditedRepos:", lastEditedRepos);
-
   return (
     <BootstrapTable>
       <tbody>
@@ -44,6 +42,8 @@ export default function Table({ data }) {
                     index1,
                     index2
                   );
+                  if (!language) return null;
+
                   const [name, percentage] = Object.entries(language)[0];
 
                   return (
