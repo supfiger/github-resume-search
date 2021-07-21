@@ -4,8 +4,17 @@ import TableRow from "./TableRow";
 import { convertTableData } from "./utils";
 
 export default function Table({ data }) {
-  const { name, lastName, website, amountOfPublicRepos, date, languagesGrid } =
-    convertTableData(data);
+  const {
+    name,
+    lastName,
+    website,
+    amountOfPublicRepos,
+    date,
+    languagesGrid,
+    lastEditedRepos,
+  } = convertTableData(data);
+
+  console.log("lastEditedRepos:", lastEditedRepos);
 
   return (
     <BootstrapTable>
@@ -43,6 +52,14 @@ export default function Table({ data }) {
                     </Col>
                   );
                 })}
+              </Row>
+            ))}
+        </TableRow>
+        <TableRow title="Recently edited repositories">
+          {lastEditedRepos &&
+            lastEditedRepos.map((item) => (
+              <Row>
+                <a href={item.url}>{item.name}</a>
               </Row>
             ))}
         </TableRow>

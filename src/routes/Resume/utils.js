@@ -1,10 +1,14 @@
 import { getPercentageFromObj } from "../../utils";
 
-export const getRepos = async ({ repos_url, controller }) => {
-  const reposResponse = await fetch(repos_url, {
+export const getRepos = ({ repos_url, controller }) => {
+  return fetch(repos_url, {
     signal: controller.signal,
-  });
-  return await reposResponse.json();
+  })
+    .then((data) => data.json())
+    .then((data) => {
+      console.log("getRepos → data:", data);
+      return data;
+    });
 };
 
 const getReposLanguageList = async ({ repos, controller }) => {
@@ -43,7 +47,23 @@ const getPercentageOfLanguages = (arr) => {
   return Object.keys(languages).map((item) => ({ [item]: languages[item] }));
 };
 
-export const getLanguages = async (arr) => {
-  const data = await getReposLanguageList(arr);
-  return getPercentageOfLanguages(data);
+export const getLanguages = ({ repos, controller }) => {
+  return getReposLanguageList({ repos, controller }).then((data) =>
+    getPercentageOfLanguages(data)
+  );
+};
+
+export const fetchUserData = ({ controller, username, setLoading }) => {
+  setLoading(true);
+
+  return fetch(`https://api.github.com/users/${username}`, {
+    signal: controller.signal,
+  })
+    .then((data) => data.json())
+    .then((data) => {
+      console.log("data:", data);
+      return data;
+    })
+    .catch((error) => console.error(error))
+    .finally(setLoading(false));
 };

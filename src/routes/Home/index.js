@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import {
   InputGroup,
@@ -10,26 +10,12 @@ import {
   Col,
 } from "reactstrap";
 
-function Header() {
-  return (
-    <>
-      <Row className="border-bottom py-3">
-        <h1>Home</h1>
-      </Row>
-      <Row className="border-bottom py-3">
-        <h2 className="h5">Search for information about any github user</h2>
-        <p className="m-0">
-          This application can show you an information about any github user.{" "}
-          <br />
-          Just enter a username you want and click the "Search" button.
-        </p>
-      </Row>
-    </>
-  );
-}
+import HomeHeader from "./HomeHeader";
+import { searchUser } from "./utils";
 
 function Search() {
   const [username, setUsername] = useState("");
+  const [searching, setSearching] = useState(false);
   let history = useHistory();
 
   const handleChangeUsername = (e) => {
@@ -40,20 +26,16 @@ function Search() {
     if (e.key === "Enter") handleSearchClick();
   };
 
-  const handleSearchClick = async () => {
-    try {
-      const response = await fetch(`https://api.github.com/users/${username}`);
-      const json = await response.json();
-      console.log("json:", json);
-
-      history.push({
-        pathname: `/${username}`,
-        state: { userData: json },
-      });
-    } catch (error) {
-      console.error(error);
-    }
+  const handleSearchClick = () => {
+    setSearching(true);
   };
+
+  useEffect(() => {
+    let controller = new AbortController();
+    if (searching) searchUser({ controller, username, history });
+
+    return () => controller?.abort();
+  }, [searching]);
 
   return (
     <Row className="py-3">
@@ -79,7 +61,7 @@ function Search() {
 export default function Home() {
   return (
     <Container>
-      <Header />
+      <HomeHeader />
       <Search />
     </Container>
   );

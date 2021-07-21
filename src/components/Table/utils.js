@@ -5,6 +5,7 @@ export const convertTableData = (data) => {
     amountOfPublicRepos,
     dateProfileCreated,
     languages,
+    repos,
   } = data;
 
   const name = (userFullName && userFullName.split(" ")[0]) || "";
@@ -17,6 +18,7 @@ export const convertTableData = (data) => {
 
   let languagesGrid;
   if (languages) {
+    console.log("languages:", languages);
     languagesGrid = {
       columns: 3,
       get rows() {
@@ -29,9 +31,25 @@ export const convertTableData = (data) => {
         return [...Array(this.rows).keys()];
       },
       getCurrentLanguage(row, col) {
-        return languages[row * this.columns + col];
+        const lang = languages[row * this.columns + col];
+        return lang;
       },
     };
+  }
+
+  let lastEditedRepos;
+  if (repos) {
+    lastEditedRepos = repos
+      .map((item) => {
+        const fieldKeys = ["updated_at", "url", "name"];
+        return fieldKeys.reduce(
+          (prev, curr) => ({ ...prev, [curr]: item[curr] }),
+          {}
+        );
+      })
+      .map((item) => ({ ...item, updated_at: new Date(item["updated_at"]) }))
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 5);
   }
 
   return {
@@ -41,5 +59,6 @@ export const convertTableData = (data) => {
     amountOfPublicRepos,
     date,
     languagesGrid,
+    lastEditedRepos,
   };
 };
