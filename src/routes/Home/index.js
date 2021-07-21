@@ -43,16 +43,13 @@ function Search() {
   const handleSearchClick = async () => {
     try {
       const response = await fetch(`https://api.github.com/users/${username}`);
-
       const json = await response.json();
+      console.log("json:", json);
 
-      if (response.ok) {
-        console.log("json:", json);
-        history.push({
-          pathname: `/${username}`,
-          state: { userData: json },
-        });
-      }
+      history.push({
+        pathname: `/${username}`,
+        state: { userData: json },
+      });
     } catch (error) {
       console.error(error);
     }

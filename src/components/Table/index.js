@@ -1,26 +1,16 @@
-import { Table as BootstrapTable } from "reactstrap";
+import { Table as BootstrapTable, Row, Col } from "reactstrap";
 
-function Row({ title, children }) {
-  return (
-    <tr>
-      <th scope="row">{title}</th>
-      <td>{children}</td>
-    </tr>
-  );
-}
+import TableRow from "./TableRow";
+import { convertTableData } from "./utils";
 
 export default function Table({ data }) {
-  const { userFullName, website, amountOfPublicRepos, dateProfileCreated } =
-    data;
-
-  const name = userFullName.split(" ")[0];
-  const lastName = userFullName.split(" ")[1];
-  const year = dateProfileCreated.toLocaleString();
+  const { name, lastName, website, amountOfPublicRepos, date, languagesGrid } =
+    convertTableData(data);
 
   return (
     <BootstrapTable>
       <tbody>
-        <Row title="Main info">
+        <TableRow title="Main info">
           <span>Name: </span>
           <strong>{name} </strong>
           <br />
@@ -30,12 +20,32 @@ export default function Table({ data }) {
           <span>Public repositories: </span>
           <strong>{amountOfPublicRepos}</strong>
           <br />
-          <span>Year profile created: </span>
-          <strong>{year}</strong>
-        </Row>
-        <Row title="Website">
+          <span>Date profile created: </span>
+          <strong>{date}</strong>
+        </TableRow>
+        <TableRow title="Website">
           <a href={website}>{website}</a>
-        </Row>
+        </TableRow>
+        <TableRow title="Languages">
+          {languagesGrid &&
+            languagesGrid.arrayOfRows.map((item1, index1) => (
+              <Row key={item1}>
+                {languagesGrid.arrayOfColumns.map((item2, index2) => {
+                  const language = languagesGrid.getCurrentLanguage(
+                    index1,
+                    index2
+                  );
+                  const [name, percentage] = Object.entries(language)[0];
+
+                  return (
+                    <Col key={item2}>
+                      <strong>{name}</strong> {`(${percentage}%)`}
+                    </Col>
+                  );
+                })}
+              </Row>
+            ))}
+        </TableRow>
       </tbody>
     </BootstrapTable>
   );
