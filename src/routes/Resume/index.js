@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Container } from "reactstrap";
 
-import ResumeHeader from "./ResumeHeader";
-import NotFoundHeader from "./NotFoundHeader";
-import UserInfo from "./UserInfo";
+import ResumeHeader from "./components/ResumeHeader";
+import NotFoundHeader from "./components/NotFoundHeader";
+import UserInfo from "./components/UserInfo";
 import { fetchUserData } from "./utils";
 
 export default function Resume() {

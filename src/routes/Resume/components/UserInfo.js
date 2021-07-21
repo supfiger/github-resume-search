@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Row } from "reactstrap";
 
-import Table from "../../components/Table";
-import { getRepos, getLanguages } from "./utils";
+import Table from "../../../components/Table";
+import { getRepos, getLanguages } from "../utils";
 
 export default function UserInfo({ userData }) {
   const [repos, setRepos] = useState(null);
