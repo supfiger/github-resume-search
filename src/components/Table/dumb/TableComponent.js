@@ -1,9 +1,12 @@
 import { Table as BootstrapTable, Row, Col } from "reactstrap";
 
 import TableRow from "./TableRow";
-import { convertTableData } from "../utils";
+import { convertTableData, useWindowSize } from "../utils";
 
 export default function Table({ data }) {
+  const windowSize = useWindowSize();
+  const width = windowSize && windowSize.width;
+
   const {
     name,
     lastName,
@@ -12,7 +15,7 @@ export default function Table({ data }) {
     date,
     languagesGrid,
     lastEditedRepos,
-  } = convertTableData(data);
+  } = convertTableData({ ...data, width });
 
   return (
     <BootstrapTable>

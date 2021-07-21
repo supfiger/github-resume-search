@@ -1,4 +1,27 @@
+import React from "react";
+
 import { getPercentageFromObj } from "../../utils";
+
+export const useWindowSize = () => {
+  const [windowSize, setWindowSize] = React.useState(null);
+
+  React.useEffect(() => {
+    const setSize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+
+    setSize();
+    window.addEventListener("resize", setSize);
+
+    return () => window.removeEventListener("resize", setSize);
+  }, []);
+
+  React.useEffect(() => {
+    console.log("windowSize:", windowSize);
+  }, [windowSize]);
+
+  return windowSize;
+};
 
 export const convertTableData = (data) => {
   const {
@@ -8,6 +31,7 @@ export const convertTableData = (data) => {
     dateProfileCreated,
     languages,
     repos,
+    width,
   } = data;
 
   const name = (userFullName && userFullName.split(" ")[0]) || "";
@@ -21,7 +45,10 @@ export const convertTableData = (data) => {
   let languagesGrid;
   if (languages) {
     languagesGrid = {
-      columns: 3,
+      get columns() {
+        if (width < 700) return 1;
+        return 3;
+      },
       get rows() {
         if (languages.length < this.columns) return 1;
         return Math.round(languages.length / this.columns);
