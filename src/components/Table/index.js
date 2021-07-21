@@ -1,69 +1,43 @@
-import { Table as BootstrapTable, Row, Col } from "reactstrap";
+import { useState, useEffect } from "react";
+import { Row } from "reactstrap";
 
-import TableRow from "./TableRow";
-import { convertTableData } from "./utils";
+import TableComponent from "./dumb/TableComponent";
+import { getRepos, getLanguages } from "./utils";
 
-export default function Table({ data }) {
-  const {
-    name,
-    lastName,
-    website,
-    amountOfPublicRepos,
-    date,
-    languagesGrid,
-    lastEditedRepos,
-  } = convertTableData(data);
+export default function UserInfo({ userData }) {
+  const [repos, setRepos] = useState(null);
+  const [languages, setLanguages] = useState(null);
+  const { repos_url } = userData;
+  const tableInfo = {
+    userFullName: userData.name,
+    amountOfPublicRepos: userData.public_repos,
+    dateProfileCreated: userData.created_at,
+    website: userData.blog,
+    languages,
+    repos,
+  };
+
+  // set list of user repos
+  useEffect(() => {
+    let controller = new AbortController();
+    getRepos({ repos_url, controller }).then((data) => setRepos(data));
+
+    return () => controller?.abort();
+  }, [repos_url]);
+
+  // set list of user's used languages
+  useEffect(() => {
+    let controller = new AbortController();
+    if (repos) {
+      getLanguages({ repos, controller }).then((data) => setLanguages(data));
+    }
+
+    return () => controller?.abort();
+  }, [repos]);
 
   return (
-    <BootstrapTable>
-      <tbody>
-        <TableRow title="Main info">
-          <span>Name: </span>
-          <strong>{name} </strong>
-          <br />
-          <span>Last name: </span>
-          <strong>{lastName}</strong>
-          <br />
-          <span>Public repositories: </span>
-          <strong>{amountOfPublicRepos}</strong>
-          <br />
-          <span>Date profile created: </span>
-          <strong>{date}</strong>
-        </TableRow>
-        <TableRow title="Website">
-          <a href={website}>{website}</a>
-        </TableRow>
-        <TableRow title="Languages">
-          {languagesGrid &&
-            languagesGrid.arrayOfRows.map((item1, index1) => (
-              <Row key={item1}>
-                {languagesGrid.arrayOfColumns.map((item2, index2) => {
-                  const language = languagesGrid.getCurrentLanguage(
-                    index1,
-                    index2
-                  );
-                  if (!language) return null;
-
-                  const [name, percentage] = Object.entries(language)[0];
-
-                  return (
-                    <Col key={item2}>
-                      <strong>{name}</strong> {`(${percentage}%)`}
-                    </Col>
-                  );
-                })}
-              </Row>
-            ))}
-        </TableRow>
-        <TableRow title="Recently edited repositories">
-          {lastEditedRepos &&
-            lastEditedRepos.map((item) => (
-              <Row key={item.name}>
-                <a href={item.url}>{item.name}</a>
-              </Row>
-            ))}
-        </TableRow>
-      </tbody>
-    </BootstrapTable>
+    <Row>
+      <TableComponent data={tableInfo} />
+    </Row>
   );
 }

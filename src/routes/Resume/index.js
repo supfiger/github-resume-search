@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Container } from "reactstrap";
 
-import ResumeHeader from "./components/ResumeHeader";
-import NotFoundHeader from "./components/NotFoundHeader";
-import UserInfo from "./components/UserInfo";
+import ResumeHeader from "./dumb/ResumeHeader";
+import NotFoundHeader from "./dumb/NotFoundHeader";
+import Table from "../../components/Table";
 import { fetchUserData } from "./utils";
 
 export default function Resume() {
@@ -31,7 +31,7 @@ export default function Resume() {
     return (
       <Container>
         <ResumeHeader userData={userData} />
-        {loading ? <p>Loading...</p> : <UserInfo userData={userData} />}
+        {loading ? <p>Loading...</p> : <Table userData={userData} />}
       </Container>
     );
   } else {
