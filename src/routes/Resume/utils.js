@@ -1,15 +1,17 @@
 import { getPercentageFromObj } from "../../utils";
 
-export const getRepos = async (url) => {
-  const reposResponse = await fetch(url);
+export const getRepos = async ({ repos_url, controller }) => {
+  const reposResponse = await fetch(repos_url, {
+    signal: controller.signal,
+  });
   return await reposResponse.json();
 };
 
-const getReposLanguageList = async (arr) => {
+const getReposLanguageList = async ({ repos, controller }) => {
   let reposLanguagesList = [];
 
-  for (const item of arr) {
-    await fetch(item.languages_url)
+  for (const item of repos) {
+    await fetch(item.languages_url, { signal: controller.signal })
       .then((data) => data.json())
       .then((data) => getPercentageFromObj(data))
       .then((data) => reposLanguagesList.push(data));

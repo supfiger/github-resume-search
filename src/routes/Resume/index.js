@@ -41,14 +41,20 @@ function UserInfo() {
 
   // set list of user repos
   useEffect(() => {
-    getRepos(repos_url).then((data) => setRepos(data));
+    let controller = new AbortController();
+    getRepos({ repos_url, controller }).then((data) => setRepos(data));
+
+    return () => controller?.abort();
   }, [repos_url]);
 
   // set list of user's used languages
   useEffect(() => {
+    let controller = new AbortController();
     if (repos) {
-      getLanguages(repos).then((data) => setLanguages(data));
+      getLanguages({ repos, controller }).then((data) => setLanguages(data));
     }
+
+    return () => controller?.abort();
   }, [repos]);
 
   useEffect(() => {
