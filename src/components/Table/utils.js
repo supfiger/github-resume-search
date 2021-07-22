@@ -16,10 +16,6 @@ export const useWindowSize = () => {
     return () => window.removeEventListener("resize", setSize);
   }, []);
 
-  React.useEffect(() => {
-    console.log("windowSize:", windowSize);
-  }, [windowSize]);
-
   return windowSize;
 };
 
@@ -130,12 +126,7 @@ const getPercentageOfLanguages = (arr) => {
 export const getRepos = ({ repos_url, controller }) => {
   return fetch(repos_url, {
     signal: controller.signal,
-  })
-    .then((data) => data.json())
-    .then((data) => {
-      console.log("getRepos → data:", data);
-      return data;
-    });
+  }).then((data) => data.json());
 };
 
 export const getLanguages = ({ repos, controller }) => {

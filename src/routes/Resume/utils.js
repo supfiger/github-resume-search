@@ -5,10 +5,6 @@ export const fetchUserData = ({ controller, username, setLoading }) => {
     signal: controller.signal,
   })
     .then((data) => data.json())
-    .then((data) => {
-      console.log("data:", data);
-      return data;
-    })
     .catch((error) => console.error(error))
     .finally(setLoading(false));
 };
