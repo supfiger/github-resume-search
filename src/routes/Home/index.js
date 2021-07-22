@@ -35,6 +35,7 @@ function Search() {
     if (searching) searchUser({ controller, username, history });
 
     return () => controller?.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searching]);
 
   return (
