@@ -69,7 +69,7 @@ export const convertTableData = (data) => {
   if (repos) {
     lastEditedRepos = repos
       .map((item) => {
-        const fieldKeys = ["updated_at", "url", "name"];
+        const fieldKeys = ["updated_at", "svn_url", "name"];
         return fieldKeys.reduce(
           (prev, curr) => ({ ...prev, [curr]: item[curr] }),
           {}

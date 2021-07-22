@@ -62,7 +62,7 @@ export default function Table({ data }) {
           {lastEditedRepos &&
             lastEditedRepos.map((item) => (
               <Row key={item.name}>
-                <a href={item.url}>{item.name}</a>
+                <a href={item.svn_url}>{item.name}</a>
               </Row>
             ))}
         </TableRow>
