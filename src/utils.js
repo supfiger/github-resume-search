@@ -1,12 +1,13 @@
-export const getPercentageFromObj = (obj) => {
-  const sum = getSumFromObjectValues(obj);
+export const convertNumbersToPercentage = (obj) => {
+  const newObj = { ...obj };
+  const sum = getSumFromObjectValues(newObj);
 
   for (let key in obj) {
-    const newValue = Number(((obj[key] / sum) * 100).toFixed(1));
-    obj[key] = newValue;
+    const newValue = Number(((newObj[key] / sum) * 100).toFixed(1));
+    newObj[key] = newValue;
   }
 
-  return obj;
+  return newObj;
 };
 
 export const getSumFromObjectValues = (obj) => {

@@ -19,7 +19,7 @@ export default function Resume() {
   }, [userData]);
 
   useEffect(() => {
-    let controller = new AbortController();
+    const controller = new AbortController();
     fetchUserData({ username, controller, setLoading }).then((data) =>
       setUserData(data)
     );

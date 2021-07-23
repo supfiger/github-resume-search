@@ -19,7 +19,7 @@ export default function UserInfo({ userData }) {
 
   // set list of user repos
   useEffect(() => {
-    let controller = new AbortController();
+    const controller = new AbortController();
     getRepos({ repos_url, controller }).then((data) => setRepos(data));
 
     return () => controller?.abort();
@@ -27,7 +27,7 @@ export default function UserInfo({ userData }) {
 
   // set list of user's used languages
   useEffect(() => {
-    let controller = new AbortController();
+    const controller = new AbortController();
     if (repos) {
       getLanguages({ repos, controller }).then((data) => setLanguages(data));
     }

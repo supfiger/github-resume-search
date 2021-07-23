@@ -1,6 +1,6 @@
 import React from "react";
 
-import { getPercentageFromObj } from "../../utils";
+import { convertNumbersToPercentage } from "../../utils";
 
 export const useWindowSize = () => {
   const [windowSize, setWindowSize] = React.useState(null);
@@ -30,40 +30,30 @@ export const convertTableData = (data) => {
     width,
   } = data;
 
-  const name = (userFullName && userFullName.split(" ")[0]) || "";
-  const lastName = (userFullName && userFullName.split(" ")[1]) || "";
-  const date = new Date(dateProfileCreated).toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-
-  let languagesGrid;
-  if (languages) {
-    languagesGrid = {
-      get columns() {
+  const createLanguagesGrid = () => {
+    return {
+      get columnsAmount() {
         if (width < 700) return 1;
         return 3;
       },
-      get rows() {
-        if (languages.length < this.columns) return 1;
-        return Math.round(languages.length / this.columns);
+      get rowsAmount() {
+        if (languages.length < this.columnsAmount) return 1;
+        return Math.ceil(languages.length / this.columnsAmount);
       },
       get arrayOfColumns() {
-        return [...Array(this.columns).keys()];
+        return [...Array(this.columnsAmount).keys()];
       },
       get arrayOfRows() {
-        return [...Array(this.rows).keys()];
+        return [...Array(this.rowsAmount).keys()];
       },
       getCurrentLanguage(row, col) {
-        return languages[row * this.columns + col];
+        return languages[row * this.columnsAmount + col];
       },
     };
-  }
+  };
 
-  let lastEditedRepos;
-  if (repos) {
-    lastEditedRepos = repos
+  const getLastEditedRepos = () => {
+    return repos
       .map((item) => {
         const fieldKeys = ["updated_at", "svn_url", "name"];
         return fieldKeys.reduce(
@@ -74,7 +64,17 @@ export const convertTableData = (data) => {
       .map((item) => ({ ...item, updated_at: new Date(item["updated_at"]) }))
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, 5);
-  }
+  };
+
+  const name = (userFullName && userFullName.split(" ")[0]) || "";
+  const lastName = (userFullName && userFullName.split(" ")[1]) || "";
+  const date = new Date(dateProfileCreated).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+  const languagesGrid = languages && createLanguagesGrid();
+  const lastEditedRepos = repos && getLastEditedRepos();
 
   return {
     name,
@@ -92,33 +92,44 @@ const getReposLanguageList = async ({ repos, controller }) => {
   const request = urls.map((item) =>
     fetch(item, { signal: controller.signal })
       .then((data) => data.json())
-      .then((data) => getPercentageFromObj(data))
+      .then((data) => convertNumbersToPercentage(data))
   );
 
   return await Promise.all(request);
 };
 
 const getPercentageOfLanguages = (arr) => {
-  let languages = {};
-
   // get sum of each language
-  languages = arr.reduce((obj, item) => {
-    const langKey = Object.keys(item)[0];
-    const prevLangValue = obj[langKey] || 0;
-    const langValue = Math.round(prevLangValue + item[langKey]);
+  const sumOfEachLanguages = arr.reduce((obj, item) => {
+    const langKeys = Object.keys(item);
+    const newObj = { ...obj };
 
-    if (langKey) {
-      return { ...obj, [langKey]: langValue };
-    } else {
-      return { ...obj };
-    }
+    langKeys.forEach((currentKey) => {
+      const prevLangValue = newObj[currentKey] || 0;
+      const langValue = Math.round(prevLangValue + item[currentKey]);
+      newObj[currentKey] = langValue;
+    });
+
+    return { ...newObj };
   }, {});
 
   // get percentage of each language
-  languages = getPercentageFromObj(languages);
+  const percentageOfEachLanguages =
+    convertNumbersToPercentage(sumOfEachLanguages);
 
-  // return array of objects
-  return Object.keys(languages).map((item) => ({ [item]: languages[item] }));
+  // array of objects
+  const percentage = Object.keys(percentageOfEachLanguages).map((item) => ({
+    [item]: percentageOfEachLanguages[item],
+  }));
+
+  console.log("getPercentageOfLanguages:", {
+    arr,
+    sumOfEachLanguages,
+    percentageOfEachLanguages,
+    percentage,
+  });
+
+  return percentage;
 };
 
 export const getRepos = async ({ repos_url, controller }) => {

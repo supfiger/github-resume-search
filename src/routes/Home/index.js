@@ -16,7 +16,7 @@ import { searchUser } from "./utils";
 function Search() {
   const [username, setUsername] = useState("");
   const [searching, setSearching] = useState(false);
-  let history = useHistory();
+  const history = useHistory();
 
   const handleChangeUsername = (e) => {
     setUsername(e.target.value);
@@ -31,7 +31,7 @@ function Search() {
   };
 
   useEffect(() => {
-    let controller = new AbortController();
+    const controller = new AbortController();
     if (searching) searchUser({ controller, username, history });
 
     return () => controller?.abort();
