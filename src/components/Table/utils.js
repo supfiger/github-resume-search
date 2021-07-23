@@ -122,13 +122,6 @@ const getPercentageOfLanguages = (arr) => {
     [item]: percentageOfEachLanguages[item],
   }));
 
-  console.log("getPercentageOfLanguages:", {
-    arr,
-    sumOfEachLanguages,
-    percentageOfEachLanguages,
-    percentage,
-  });
-
   return percentage;
 };
 
