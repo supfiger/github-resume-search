@@ -88,16 +88,14 @@ export const convertTableData = (data) => {
 };
 
 const getReposLanguageList = async ({ repos, controller }) => {
-  let reposLanguagesList = [];
-
-  for (const item of repos) {
-    await fetch(item.languages_url, { signal: controller.signal })
+  const urls = repos.map((item) => item.languages_url);
+  const request = urls.map((item) =>
+    fetch(item, { signal: controller.signal })
       .then((data) => data.json())
       .then((data) => getPercentageFromObj(data))
-      .then((data) => reposLanguagesList.push(data));
-  }
+  );
 
-  return reposLanguagesList;
+  return await Promise.all(request);
 };
 
 const getPercentageOfLanguages = (arr) => {
@@ -123,14 +121,14 @@ const getPercentageOfLanguages = (arr) => {
   return Object.keys(languages).map((item) => ({ [item]: languages[item] }));
 };
 
-export const getRepos = ({ repos_url, controller }) => {
-  return fetch(repos_url, {
+export const getRepos = async ({ repos_url, controller }) => {
+  const response = await fetch(repos_url, {
     signal: controller.signal,
-  }).then((data) => data.json());
+  });
+  return await response.json();
 };
 
-export const getLanguages = ({ repos, controller }) => {
-  return getReposLanguageList({ repos, controller }).then((data) =>
-    getPercentageOfLanguages(data)
-  );
+export const getLanguages = async ({ repos, controller }) => {
+  const response = await getReposLanguageList({ repos, controller });
+  return getPercentageOfLanguages(response);
 };
