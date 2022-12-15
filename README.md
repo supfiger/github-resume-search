@@ -1,5 +1,8 @@
-
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+# GitHub Resume Search
+
+Web app for searching information about any GitHub user
 
 ## How to run project locally:
 
